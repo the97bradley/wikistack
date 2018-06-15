@@ -1,16 +1,41 @@
 const router = require("express").Router();
-const { addPage } = require("../views");
+const {addPage} = require("../views");
+
+
+const {Page} = require("../models");
+
 
 router.get("/", (req, res, next) => {
-  res.redirect("../");
+    res.redirect("../");
 });
 
-router.post("/", (req, res, next) => {
-  res.json(req.body);
+router.post('/', async (req, res, next) => {
+
+    // STUDENT ASSIGNMENT:
+    // add definitions for `title` and `content`
+
+    const page = new Page({
+        title: req.body.title,
+        content: req.body.content,
+
+    });
+
+
+
+
+    // make sure we only redirect *after* our save is complete!
+    // note: `.save` returns a promise.
+    try {
+        await page.save();
+        res.redirect('/');
+    } catch (error) {
+        next(error)
+    }
 });
+
 
 router.get("/add", (req, res, next) => {
-  res.send(addPage());
+    res.send(addPage());
 });
 
 module.exports = router;
